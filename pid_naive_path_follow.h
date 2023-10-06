@@ -1,5 +1,5 @@
 /*
- * pid.h - interface for the PID control abstractions for rover navigation
+ * pid.h - interface for PID control for rover path following
  */
 
 #pragma once
