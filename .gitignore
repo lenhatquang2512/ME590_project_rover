@@ -1,0 +1,6 @@
+.DS_Store # macOS directory metadata
+*.dSYM
+*.o
+
+.vscode/ # VSCode
+.idea/ # JetBrains
