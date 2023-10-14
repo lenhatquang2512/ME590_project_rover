@@ -80,11 +80,11 @@ void animationPlot(std::string fname) {
 }
 
 void TurtleBotController::poseCallback(const nav_msgs::msg::Odometry::SharedPtr pose) {
-    // get current time
+    // Get current time
     rclcpp::Time current_time = this->get_clock()->now();
 
     // Calculate the elapsed time in seconds
-    float tt = (current_time - node_start_time_).seconds();
+    float tt = (current_time - node_start_time_).seconds(); 
 
     // desired yaw angle
     //  double desired_theta = atan2(desired_y_,desired_x_);
@@ -111,15 +111,12 @@ void TurtleBotController::poseCallback(const nav_msgs::msg::Odometry::SharedPtr 
     // error_et_ = desired_theta - yaw;
     error_et_ = theta_error - yaw;
 
-
     while (error_et_ < -M_PI) error_et_ += 2.0 * M_PI;
     while (error_et_ > M_PI) error_et_ -= 2.0 * M_PI;
 
     // Calculate the integrals
-
     integral_el_ += error_el_ * dt;
     integral_et_ += error_et_ * dt;
-
     integral_el_ = CLAMP(integral_el_, -vmax_, vmax_);
 
     // Calculate the derivatives
@@ -155,11 +152,11 @@ void TurtleBotController::poseCallback(const nav_msgs::msg::Odometry::SharedPtr 
         RCLCPP_INFO(this->get_logger(), "TurtleBot reached the goal!");
 
         // Check if there are more waypoints
-        if (current_waypoint_ < waypoints_.size()) {
+        if (curr_waypoint_idx_ < waypoints_.size()) {
             // Move to the next waypoint
-            desired_x_ = waypoints_[current_waypoint_].first;
-            desired_y_ = waypoints_[current_waypoint_].second;
-            current_waypoint_++;
+            desired_x_ = waypoints_[curr_waypoint_idx_].first;
+            desired_y_ = waypoints_[curr_waypoint_idx_].second;
+            curr_waypoint_idx_++;
         } else {
             RCLCPP_INFO(this->get_logger(), "All waypoints reached!");
             // Stop the robot
@@ -189,7 +186,7 @@ void TurtleBotController::poseCallback(const nav_msgs::msg::Odometry::SharedPtr 
     previous_error_el_ = error_el_;
     previous_error_et_ = error_et_;
 
-    // saving the robot path using points
+    // Save the robot path as points
     Point p;
     p.x = (float) pose->pose.pose.position.x;
     p.y = (float) pose->pose.pose.position.y;
@@ -200,13 +197,22 @@ void TurtleBotController::poseCallback(const nav_msgs::msg::Odometry::SharedPtr 
     Trajectory.push_back(p);
 }
 
+void generateWaypoints(double x_min = -5.0, double x_max = 5.0, double x_incr = 0.5, double a = 0.1, double b = 0.0, double c = 0.0) {
+    for (double x = x_min; x <= x_max; x += x_incr) {
+        // Calculate y using a polynomial function (e.g., y = ax^2 + bx + c)
+        double y = a * x * x + b * x + c;
+
+        // Add the (x, y) point as a waypoint
+        waypoints_.push_back({x, y});
+    }
+}
+
 void TurtleBotController::controlLoop() {
     // This function is called periodically for control loop updates
     // You can add any additional logic here
 }
 
-TurtleBotController::TurtleBotController()
-    : Node("pid_naive_path_follow") {
+TurtleBotController::TurtleBotController() : Node("pid_naive_path_follow") { 
     publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 1);
     subscriber_ = this->create_subscription<nav_msgs::msg::Odometry>(
       "odom", 10, std::bind(&TurtleBotController::poseCallback, this, std::placeholders::_1));
@@ -215,35 +221,19 @@ TurtleBotController::TurtleBotController()
     node_start_time_ = this->now();
 
     // Initialize waypoints
-    // waypoints_ = {{-5.0, 3.0}, {3.0, 5.0}, {0.0, 0.0}}; // Add more waypoints as needed
     waypoints_ = {
         {0.0, 0.0},
         {3.0, 0.0},
         {3.0, 3.0},
         {6.0, 3.0},
         {6.0, 6.0}
-    };   // Add more waypoints as needed
-    // waypoints_ = {{-5.0, 3.0}}; // Add more waypoints as needed
-    // for (double x = -5.0; x <= 5.0; x += 0.5) {
-    //     // Calculate y using a polynomial function (e.g., y = ax^2 + bx + c)
-    //     double a = 0.1;
-    //     double b = 0.0;
-    //     double c = 0.0;
-    //     double y = a * x * x + b * x + c;
+    };
 
-    //     // Add the (x, y) point as a waypoint
-    //     waypoints_.push_back({x, y});
-    // }
-    current_waypoint_ = 0;
+    curr_waypoint_idx_ = 0;
 
     // Set the initial desired position
-    desired_x_ = waypoints_[current_waypoint_].first;
-    desired_y_ = waypoints_[current_waypoint_].second;
-
-
-    // Set the desired position
-    // desired_x_ = -5.0;
-    // desired_y_ = 3.0;
+    desired_x_ = waypoints_[curr_waypoint_idx_].first;
+    desired_y_ = waypoints_[curr_waypoint_idx_].second;
 
     // Initialize PID errors
     error_el_ = 0.0;

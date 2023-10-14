@@ -9,7 +9,7 @@
 #define CLAMP(x, lower, upper) ((x) < (lower) ? (lower) : ((x) > (upper) ? (upper) : (x)))
 
 /**
- * @brief Robot history trajectory
+ * @brief Robot history trajectory.
  */
 struct Point
 {
@@ -22,12 +22,25 @@ struct Point
 
 class TurtleBotController : public rclcpp::Node {
 private:
+    /**
+     * @brief Perform control loop updates.
+     */
     void controlLoop();
+
+    /**
+     * @brief Generate PID path waypoints using a polynomial function.
+     */
+    void generateWaypoints(double x_min, double x_max, double x_incr, double a, double b, double c);
 
 public:
     TurtleBotController();
     ~TurtleBotController();
 
+    /**
+     * @brief Compute next pose in trajectory using previous pose in trajectory.
+     * 
+     * @param pose Previous pose in trajectory.
+     */
     void poseCallback(const nav_msgs::msg::Odometry::SharedPtr pose);
 
 private:
@@ -43,13 +56,25 @@ private:
 
 
     rclcpp::TimerBase::SharedPtr timer_;
-    rclcpp::Time node_start_time_; // Stores the node start time
 
-    // Convert geometry_msgs::msg::Quaternion to tf2::Quaternion
+    /**
+     * @brief Node start time.
+     */
+    rclcpp::Time node_start_time_;
+
+    /**
+     * @brief tf2::Quaternion object converted from geometry_msgs::msg::Quaternion object.
+     */
     tf2::Quaternion tf_quat;
 
-    // PID Gain
+    /**
+     * @brief PID gains for linear control.
+     */
     double Kp_el = 0.5, Ki_el = 0.1, Kd_el = 0.5;
+
+    /**
+     * @brief PID gains for angular control.
+     */
     double Kp_et = 3.0, Ki_et = 0.1, Kd_et = 1.0;
 
     // Desired position 
@@ -77,5 +102,5 @@ private:
 
     // List of waypoints (desired positions)
     std::vector<std::pair<double, double>> waypoints_;
-    size_t current_waypoint_;
+    size_t curr_waypoint_idx_;
 }
