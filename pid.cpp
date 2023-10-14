@@ -25,6 +25,13 @@
 
 using namespace std::chrono_literals;
 
+/**
+ * @brief Save all recorded poses of path to file.
+ * 
+ * @tparam PointType Pose datatype.
+ * @param fname Name of file to save path poses to.
+ * @param path Vector containing recorded poses of robot trajectory.
+ */
 template <typename PointType>
 void savePath(std::string fname, std::vector<PointType>& path) {
     std::ofstream MyFile(fname);
@@ -37,6 +44,11 @@ void savePath(std::string fname, std::vector<PointType>& path) {
     MyFile.close();
 }
 
+/**
+ * @brief Write gnuplot instructions to plot trajectories.
+ * 
+ * @param fname Name of file containing path poses.
+ */
 void animationPlot(std::string fname) {
     static FILE* gp;
     if (gp == NULL) {
