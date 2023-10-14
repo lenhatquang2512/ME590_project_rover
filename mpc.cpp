@@ -9,7 +9,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/laser_scan.hpp"
 // #include "std_msgs/msg/float32_multi_array.hpp"
-#include "mpc_obstacle_avoidance.h"
+#include "mpc.h"
 
 // should change these parameters into struct config
 const int predictionHorizon = 10;
@@ -48,12 +48,7 @@ T norminalAngle(T value) {
 
 MPCProblem::MPCProblem(double x_init, double y_init, double yaw_init, double x_goal, double y_goal,
                        const std::vector<std::vector<double>> obs_list)
-    : x_init(x_init)
-    , y_init(y_init)
-    , yaw_init(yaw_init)
-    , x_goal(x_goal)
-    , y_goal(y_goal)
-    , obs_list(obs_list) {}
+    : x_init(x_init), y_init(y_init), yaw_init(yaw_init), x_goal(x_goal), y_goal(y_goal), obs_list(obs_list) {}
 
 template <typename T>
 bool MPCProblem::operator()(const T* const v, const T* const w, T* residual) const {
@@ -242,9 +237,9 @@ void MPCController::laserCallback(const sensor_msgs::msg::LaserScan::SharedPtr m
     }
 }
 
-// void MPCController::process(void){
-// //to do something else, maybe connect with the custom Plugin Nav2 control ?
-// }
+void MPCController::process(void){
+    //to do something else, maybe connect with the custom Plugin Nav2 control ?
+}
 
 int main(int argc, char** argv) {
     rclcpp::init(argc, argv);

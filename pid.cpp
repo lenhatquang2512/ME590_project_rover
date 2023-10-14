@@ -131,10 +131,10 @@ void TurtleBotController::poseCallback(const nav_msgs::msg::Odometry::SharedPtr 
 
     // Calculate the control signals using PID equation
     // double control_signal_v = vmax_ - Kvel_ * fabs(error_el_) - Kvet_ * fabs(error_et_);
-    double control_signal_v = Kpel * error_el_ + Kdel * derivative_el_ + Kiel * integral_el_;
-    // double control_signal_w =  Kpet * error_et_ + Kdet * (derivative_et_ /dt) + Kiet * integral_et_ ;
-    // control_signal_w += Kpel * error_el_ + Kdel * derivative_el_  + Kiel * integral_el_;
-    double control_signal_w = Kpet * error_et_ + Kdet * (derivative_et_ / dt) + Kiet * integral_et_;
+    double control_signal_v = Kp_el * error_el_ + Kd_el * derivative_el_ + Ki_el * integral_el_;
+    // double control_signal_w =  Kp_et * error_et_ + Kd_et * (derivative_et_ /dt) + Ki_et * integral_et_ ;
+    // control_signal_w += Kp_el * error_el_ + Kd_el * derivative_el_  + Ki_el * integral_el_;
+    double control_signal_w = Kp_et * error_et_ + Kd_et * (derivative_et_ / dt) + Ki_et * integral_et_;
 
     while (control_signal_v > vmax_) control_signal_v = vmax_;
     while (control_signal_v < -vmax_) control_signal_v = -vmax_;

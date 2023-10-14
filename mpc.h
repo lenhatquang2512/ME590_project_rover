@@ -27,7 +27,8 @@ public:
 
   void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg);  
   void laserCallback(const sensor_msgs::msg::LaserScan::SharedPtr msg); 
-  // void process(void);
+  
+  void process(void);
 
 private:
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr velocity_pub_;

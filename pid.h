@@ -10,7 +10,6 @@
 
 /**
  * @brief Robot history trajectory
- * 
  */
 struct Point
 {
@@ -32,8 +31,17 @@ public:
     void poseCallback(const nav_msgs::msg::Odometry::SharedPtr pose);
 
 private:
+    /**
+     * @brief Publisher for sending TurtleBot velocity messages to a ROS topic
+     */
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr publisher_;
+
+    /**
+     * @brief Subscription to receive messages about TurtleBot pose and velocity from a ROS topic
+     */
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr subscriber_;
+
+
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::Time node_start_time_; // Stores the node start time
 
@@ -41,10 +49,10 @@ private:
     tf2::Quaternion tf_quat;
 
     // PID Gain
-    double Kpel = 0.5, Kdel = 0.5, Kiel = 0.1;
-    double Kpet = 3.0, Kdet = 1.0, Kiet = 0.1;
+    double Kp_el = 0.5, Ki_el = 0.1, Kd_el = 0.5;
+    double Kp_et = 3.0, Ki_et = 0.1, Kd_et = 1.0;
 
-    // Desired position
+    // Desired position 
     double desired_x_;
     double desired_y_;
 
