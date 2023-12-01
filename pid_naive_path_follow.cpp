@@ -127,12 +127,12 @@ private:
   double vmax_ = 1.0;
   double Kvet_ = 1.0, Kvel_ = 1.0;
 
-  double lookaheadDist_ = 0.2; //threshold or goal tolerance
+  double lookaheadDist_ = 0.1; //threshold or goal tolerance
 
   double dt = 0.1;  // Time step (0.1 seconds)
 
   std::vector<Point> Trajectory; //to save rover trajectory
-  std::string fname="/home/pgurram/ros2_ws/src/hello/scripts/rover_state.txt";  //just a directory, please change
+  std::string fname="/home/quang_le/ros2_ws/src/hello/scripts/rover_state.txt";  //just a directory, please change
 
   // List of waypoints (desired positions)
   std::vector<std::pair<double, double>> waypoints_;
@@ -291,6 +291,7 @@ public:
     // Initialize waypoints
     // waypoints_ = {{-5.0, 3.0}, {3.0, 5.0}, {0.0, 0.0}}; // Add more waypoints as needed
     waypoints_ = {{0.0, 0.0}, {3.0, 0.0}, {3.0, 3.0},{6.0, 3.0},{6.0,6.0}}; // Add more waypoints as needed
+    // waypoints_ = {{0.0, 0.0}, {1.0, 0.0}, {0.0, -1.0}}; // Add more waypoints as needed
     // waypoints_ = {{-5.0, 3.0}}; // Add more waypoints as needed
     // for (double x = -5.0; x <= 5.0; x += 0.5) {
     //     // Calculate y using a polynomial function (e.g., y = ax^2 + bx + c)
